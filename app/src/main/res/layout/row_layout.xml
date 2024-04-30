@@ -16,25 +16,7 @@
         android:padding="8dp" />
 
     <TextView
-        android:id="@+id/textViewDonorLatitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp" />
-
-    <TextView
-        android:id="@+id/textViewDonorLongitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp" />
-
-    <TextView
-        android:id="@+id/textViewReceiverLatitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp" />
-
-    <TextView
-        android:id="@+id/textViewReceiverLongitude"
+        android:id="@+id/textViewStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp" />

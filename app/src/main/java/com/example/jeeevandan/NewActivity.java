@@ -34,8 +34,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class NewActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
-    private TripDetailsAdapter adapter;
     private TableLayout tableLayout;
 
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 123;
@@ -49,8 +47,6 @@ public class NewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new);
         tableLayout = findViewById(R.id.tableLayout);
 
-//        recyclerView = findViewById(R.id.recyclerView);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Bundle extras = getIntent().getExtras();
         String driverid = extras.getString("id");
         Log.d(TAG,"id  "+extras.getString("id"));
@@ -65,21 +61,21 @@ public class NewActivity extends AppCompatActivity {
                 if (tripDetailsList != null && !tripDetailsList.isEmpty()) {
                     for (Driver.TripDetails tripDetails : tripDetailsList) {
                         TableRow row = (TableRow) getLayoutInflater().inflate(R.layout.row_layout, null);
-
                         TextView tvTransplantId = row.findViewById(R.id.textViewTransplantId);
                         TextView tvDriverName = row.findViewById(R.id.textViewDriverName);
-                        TextView tvDonorLatitude = row.findViewById(R.id.textViewDonorLatitude);
-                        TextView tvDonorLongitude = row.findViewById(R.id.textViewDonorLongitude);
-                        TextView tvReceiverLatitude = row.findViewById(R.id.textViewReceiverLatitude);
-                        TextView tvReceiverLongitude = row.findViewById(R.id.textViewReceiverLongitude);
+                        TextView tvtextViewStatus = row.findViewById(R.id.textViewStatus);
 
                         tvTransplantId.setText(String.valueOf(tripDetails.getT_id()));
                         tvDriverName.setText(tripDetails.getDriver());
-                        tvDonorLatitude.setText(String.valueOf(tripDetails.getD_lat()));
-                        tvDonorLongitude.setText(String.valueOf(tripDetails.getD_lngt()));
-                        tvReceiverLatitude.setText(String.valueOf(tripDetails.getR_lat()));
-                        tvReceiverLongitude.setText(String.valueOf(tripDetails.getR_lngt()));
-
+                        String Trans_status="";
+                        if(tripDetails.isTrans_end()==false)
+                        {
+                            Trans_status="Ongoing";
+                        }
+                        else {
+                            Trans_status="Completed";
+                        }
+                        tvtextViewStatus.setText(Trans_status);
                         tableLayout.addView(row);
                     }
                 } else {
