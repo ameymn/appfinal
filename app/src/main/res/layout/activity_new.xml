@@ -38,24 +38,6 @@
                     android:textStyle="bold"
                     android:padding="8dp"/>
 
-                <Button
-                    android:id="@+id/buttonStart"
-                    android:layout_width="55dp"
-                    android:layout_height="36dp"
-                    android:textSize="10sp"
-                    android:background="@color/light_green"
-                    android:text="Start" />
-                <Space
-                    android:layout_width="16dp"
-                    android:layout_height="wrap_content" />
-                <Button
-                    android:id="@+id/buttonStop"
-                    android:layout_width="55dp"
-                    android:layout_height="36dp"
-                    android:textSize="10sp"
-                    android:background="@color/light_green"
-                    android:text="Stop" />
-
             </TableRow>
 
         </TableLayout>

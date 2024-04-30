@@ -9,6 +9,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -49,7 +50,7 @@ public class NewActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         String driverid = extras.getString("id");
-        Log.d(TAG,"id  "+extras.getString("id"));
+        Log.d(TAG, "id  " + extras.getString("id"));
 
         ApiService apiServicedriver = RetrofitClient.getClient().create(ApiService.class);
         Call<Driver> call = apiServicedriver.driver(driverid);
@@ -64,18 +65,40 @@ public class NewActivity extends AppCompatActivity {
                         TextView tvTransplantId = row.findViewById(R.id.textViewTransplantId);
                         TextView tvDriverName = row.findViewById(R.id.textViewDriverName);
                         TextView tvtextViewStatus = row.findViewById(R.id.textViewStatus);
+                        Button startButton = row.findViewById(R.id.buttonStart);
+                        Button stopButton = row.findViewById(R.id.buttonStop);
 
                         tvTransplantId.setText(String.valueOf(tripDetails.getT_id()));
                         tvDriverName.setText(tripDetails.getDriver());
-                        String Trans_status="";
-                        if(tripDetails.isTrans_end()==false)
-                        {
-                            Trans_status="Ongoing";
-                        }
-                        else {
-                            Trans_status="Completed";
+                        String Trans_status = "";
+                        if (tripDetails.isTrans_end() == false) {
+                            Trans_status = "Ongoing";
+                        } else {
+                            Trans_status = "Completed";
                         }
                         tvtextViewStatus.setText(Trans_status);
+                        // Set button visibility based on Trans_status
+                        if (Trans_status.equals("Completed")) {
+                            startButton.setVisibility(View.GONE);
+                            stopButton.setVisibility(View.GONE);
+                        } else {
+                            startButton.setVisibility(View.VISIBLE);
+                            stopButton.setVisibility(View.VISIBLE);
+
+                            startButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    startLocationTracking();
+                                }
+                            });
+
+                            stopButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    stopLocationTracking();
+                                }
+                            });
+                        }
                         tableLayout.addView(row);
                     }
                 } else {
@@ -96,17 +119,6 @@ public class NewActivity extends AppCompatActivity {
             // Permission already granted, start location tracking
             startLocationTracking();
         }
-
-        Button startButton = findViewById(R.id.buttonStart);
-        Button stopButton = findViewById(R.id.buttonStop);
-
-        startButton.setOnClickListener(v -> {
-            startLocationTracking();
-        });
-
-        stopButton.setOnClickListener(v -> {
-            stopLocationTracking();
-        });
     }
 
     private void startLocationTracking() {
@@ -122,7 +134,7 @@ public class NewActivity extends AppCompatActivity {
                         Call<com.example.jeeevandan.Location> call = apiService.location(latitude, longitude);
                         call.enqueue(new Callback<com.example.jeeevandan.Location>() {
                             @Override
-                            public void onResponse(Call<com.example.jeeevandan.Location> call, Response<com.example.jeeevandan.Location> response){
+                            public void onResponse(Call<com.example.jeeevandan.Location> call, Response<com.example.jeeevandan.Location> response) {
                                 Log.d(TAG, "Response code: " + response.code());
 
                             }
@@ -132,22 +144,15 @@ public class NewActivity extends AppCompatActivity {
                                 Toast.makeText(com.example.jeeevandan.NewActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
 
                             }
-
-
                         });
-
-
-                            // Handle the location updates here
+                        // Handle the location updates here
                         Log.d(TAG, "Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude());
                     }
                 }
             }
         };
 
-        LocationRequest locationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(5000)
-                .setFastestInterval(2000);
+        LocationRequest locationRequest = LocationRequest.create().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY).setInterval(5000).setFastestInterval(2000);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
