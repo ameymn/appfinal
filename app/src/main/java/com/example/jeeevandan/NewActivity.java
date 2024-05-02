@@ -36,7 +36,7 @@ import retrofit2.Response;
 
 public class NewActivity extends AppCompatActivity {
     private TableLayout tableLayout;
-
+    private TextView textViewDriverName;
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 123;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
@@ -47,7 +47,7 @@ public class NewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new);
         tableLayout = findViewById(R.id.tableLayout);
-
+        textViewDriverName = findViewById(R.id.textViewDriverName); // Find the TextView
         Bundle extras = getIntent().getExtras();
         String driverid = extras.getString("id");
         Log.d(TAG, "id  " + extras.getString("id"));
@@ -60,6 +60,8 @@ public class NewActivity extends AppCompatActivity {
                 Log.d(TAG, "Response code driver: " + response.body());
                 List<Driver.TripDetails> tripDetailsList = response.body().getList();
                 if (tripDetailsList != null && !tripDetailsList.isEmpty()) {
+                    String driverName = tripDetailsList.get(0).getDriver(); // Get the driver's name from the first TripDetails object
+                    textViewDriverName.setText("Welcome "+ driverName+" \uD83D\uDC4B");
                     for (Driver.TripDetails tripDetails : tripDetailsList) {
                         TableRow row = (TableRow) getLayoutInflater().inflate(R.layout.row_layout, null);
                         TextView tvTransplantId = row.findViewById(R.id.textViewTransplantId);
@@ -67,6 +69,7 @@ public class NewActivity extends AppCompatActivity {
                         TextView tvtextViewStatus = row.findViewById(R.id.textViewStatus);
                         Button startButton = row.findViewById(R.id.buttonStart);
                         Button stopButton = row.findViewById(R.id.buttonStop);
+                        Button navigateButton=row.findViewById(R.id.buttonNavigate);
 
                         tvTransplantId.setText(String.valueOf(tripDetails.getT_id()));
                         tvDriverName.setText(tripDetails.getDriver());
@@ -81,9 +84,12 @@ public class NewActivity extends AppCompatActivity {
                         if (Trans_status.equals("Completed")) {
                             startButton.setVisibility(View.GONE);
                             stopButton.setVisibility(View.GONE);
+                            navigateButton.setVisibility(View.GONE);
                         } else {
                             startButton.setVisibility(View.VISIBLE);
                             stopButton.setVisibility(View.VISIBLE);
+                            navigateButton.setVisibility(View.VISIBLE);
+
 
                             startButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
