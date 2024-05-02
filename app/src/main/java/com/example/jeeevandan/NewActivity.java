@@ -6,6 +6,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -40,6 +41,8 @@ public class NewActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 123;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
+    private Integer Transplant_Id;
+    private Double r_lat,r_lngt;
     private boolean isLocationTrackingStarted = false;
 
     @Override
@@ -70,15 +73,22 @@ public class NewActivity extends AppCompatActivity {
                         Button startButton = row.findViewById(R.id.buttonStart);
                         Button stopButton = row.findViewById(R.id.buttonStop);
                         Button navigateButton=row.findViewById(R.id.buttonNavigate);
-
+                        Transplant_Id=tripDetails.getT_id();
                         tvTransplantId.setText(String.valueOf(tripDetails.getT_id()));
                         tvDriverName.setText(tripDetails.getDriver());
+
+
+
                         String Trans_status = "";
                         if (tripDetails.isTrans_end() == false) {
                             Trans_status = "Ongoing";
+                            r_lat=tripDetails.getR_lat();
+                            r_lngt=tripDetails.getR_lngt();
                         } else {
                             Trans_status = "Completed";
                         }
+                        Log.d(TAG, "Rlat"+ r_lat+"Rlngt"+r_lngt);
+
                         tvtextViewStatus.setText(Trans_status);
                         // Set button visibility based on Trans_status
                         if (Trans_status.equals("Completed")) {
@@ -90,11 +100,12 @@ public class NewActivity extends AppCompatActivity {
                             stopButton.setVisibility(View.VISIBLE);
                             navigateButton.setVisibility(View.VISIBLE);
 
+                            Log.d(TAG, "T_ID" + Transplant_Id);
 
                             startButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    startLocationTracking();
+                                    startLocationTracking(Transplant_Id);
                                 }
                             });
 
@@ -102,6 +113,31 @@ public class NewActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     stopLocationTracking();
+                                }
+                            });
+
+                            navigateButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    // Check if r_lat and r_lngt are not null
+                                    Log.d(TAG, "OOttd" +r_lat+"OOdddd"+r_lngt);
+                                    if (r_lat != null && r_lngt != null) {
+                                        // Create a URI for the Google Maps navigation
+                                        Intent intent=new Intent(Intent.ACTION_VIEW,Uri.parse("google.navigation:q="+r_lat+","+r_lngt));
+                                        intent.setPackage("com.google.android.apps.maps");
+                                        Log.d(TAG, "google.navigation:q="+r_lat+","+r_lngt);
+                                        startActivity(intent);
+//
+//                                        if (intent.resolveActivity(getPackageManager()) != null) {
+//                                            Log.d(TAG, "Intent resolved successfully");
+//                                            startActivity(intent);
+//                                        } else {
+//                                            Log.d(TAG, "No activity found to handle intent");
+//                                            Toast.makeText(NewActivity.this, "No navigation app installed", Toast.LENGTH_SHORT).show();
+//                                        }
+                                    } else {
+                                        Toast.makeText(NewActivity.this, "Destination not available", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             });
                         }
@@ -116,35 +152,40 @@ public class NewActivity extends AppCompatActivity {
             public void onFailure(Call<Driver> call, Throwable t) {
                 Log.e(TAG, "Error: " + t.getMessage());
             }
+
         });
 
         // Request location permission
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
-        } else {
-            // Permission already granted, start location tracking
-            startLocationTracking();
-        }
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
+//        } else {
+//            // Permission already granted, start location tracking
+//            startLocationTracking(Transplant_Id);
+//        }
     }
 
-    private void startLocationTracking() {
+    private void startLocationTracking(Integer id) {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        Log.e(TAG, "Star_id " + id);
+
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
+                Log.e(TAG, "Transss_id " + id);
                 if (locationResult != null) {
                     for (Location location : locationResult.getLocations()) {
                         Double latitude = location.getLatitude();
                         Double longitude = location.getLongitude();
                         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-                        Call<com.example.jeeevandan.Location> call = apiService.location(latitude, longitude);
+                        Call<com.example.jeeevandan.Location> call = apiService.location(id,latitude,longitude);
                         call.enqueue(new Callback<com.example.jeeevandan.Location>() {
                             @Override
                             public void onResponse(Call<com.example.jeeevandan.Location> call, Response<com.example.jeeevandan.Location> response) {
-                                Log.d(TAG, "Response code: " + response.code());
+                                Log.d(TAG, "response location" + response.code());
+                                Log.d(TAG, "response l" + response.body());
+
 
                             }
-
                             @Override
                             public void onFailure(Call<com.example.jeeevandan.Location> call, Throwable t) {
                                 Toast.makeText(com.example.jeeevandan.NewActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -152,13 +193,13 @@ public class NewActivity extends AppCompatActivity {
                             }
                         });
                         // Handle the location updates here
-                        Log.d(TAG, "Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude());
+                        Log.d(TAG, "trasn_idd"+ id + "Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude());
                     }
                 }
             }
         };
 
-        LocationRequest locationRequest = LocationRequest.create().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY).setInterval(5000).setFastestInterval(2000);
+        LocationRequest locationRequest = LocationRequest.create().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY).setInterval(15000).setFastestInterval(2000);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());

@@ -11,8 +11,8 @@ public interface ApiService {
     Call<Data> login(@Field("id") String id, @Field("password") String password);
 
     @FormUrlEncoded
-    @POST("/api/location")
-    Call<Location> location(@Field("latitude") Double latitude, @Field("longitude") Double longitude);
+    @POST("/driver/updateLoc")
+    Call<Location> location(@Field("id") Integer id, @Field("lat") Double latitude, @Field("lngt") Double longitude);
 
     @FormUrlEncoded
     @POST("/driver/getDriver")
