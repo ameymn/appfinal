@@ -68,20 +68,20 @@ public class NewActivity extends AppCompatActivity {
                     for (Driver.TripDetails tripDetails : tripDetailsList) {
                         TableRow row = (TableRow) getLayoutInflater().inflate(R.layout.row_layout, null);
                         TextView tvTransplantId = row.findViewById(R.id.textViewTransplantId);
-                        TextView tvDriverName = row.findViewById(R.id.textViewDriverName);
+//                        TextView tvDriverName = row.findViewById(R.id.textViewDriverName);
                         TextView tvtextViewStatus = row.findViewById(R.id.textViewStatus);
                         Button startButton = row.findViewById(R.id.buttonStart);
                         Button stopButton = row.findViewById(R.id.buttonStop);
                         Button navigateButton=row.findViewById(R.id.buttonNavigate);
                         Transplant_Id=tripDetails.getT_id();
                         tvTransplantId.setText(String.valueOf(tripDetails.getT_id()));
-                        tvDriverName.setText(tripDetails.getDriver());
+//                        tvDriverName.setText(tripDetails.getDriver());
 
 
 
                         String Trans_status = "";
                         if (tripDetails.isTrans_end() == false) {
-                            Trans_status = "Ongoing";
+                            Trans_status = "Assigned";
                             r_lat=tripDetails.getR_lat();
                             r_lngt=tripDetails.getR_lngt();
                         } else {
@@ -92,13 +92,22 @@ public class NewActivity extends AppCompatActivity {
                         tvtextViewStatus.setText(Trans_status);
                         // Set button visibility based on Trans_status
                         if (Trans_status.equals("Completed")) {
-                            startButton.setVisibility(View.GONE);
-                            stopButton.setVisibility(View.GONE);
-                            navigateButton.setVisibility(View.GONE);
+                            startButton.setVisibility(View.VISIBLE);
+                            stopButton.setVisibility(View.VISIBLE);
+                            navigateButton.setVisibility(View.VISIBLE);
+                            startButton.setEnabled(false);
+                            stopButton.setEnabled(false);
+                            navigateButton.setEnabled(false);
+                            startButton.setBackgroundResource(R.drawable.rounded_button_background_disabled);
+                            stopButton.setBackgroundResource(R.drawable.rounded_button_background_disabled);
+                            navigateButton.setBackgroundResource(R.drawable.rounded_button_background_disabled);
                         } else {
                             startButton.setVisibility(View.VISIBLE);
                             stopButton.setVisibility(View.VISIBLE);
                             navigateButton.setVisibility(View.VISIBLE);
+                            startButton.setBackgroundResource(R.drawable.rounded_button_background);
+                            stopButton.setBackgroundResource(R.drawable.rounded_button_background);
+                            navigateButton.setBackgroundResource(R.drawable.rounded_button_background);
 
                             Log.d(TAG, "T_ID" + Transplant_Id);
 
@@ -106,6 +115,7 @@ public class NewActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     startLocationTracking(Transplant_Id);
+                                    navigateButton.setEnabled(true);
                                 }
                             });
 
@@ -119,27 +129,24 @@ public class NewActivity extends AppCompatActivity {
                             navigateButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    // Check if r_lat and r_lngt are not null
-                                    Log.d(TAG, "OOttd" +r_lat+"OOdddd"+r_lngt);
-                                    if (r_lat != null && r_lngt != null) {
-                                        // Create a URI for the Google Maps navigation
-                                        Intent intent=new Intent(Intent.ACTION_VIEW,Uri.parse("google.navigation:q="+r_lat+","+r_lngt));
-                                        intent.setPackage("com.google.android.apps.maps");
-                                        Log.d(TAG, "google.navigation:q="+r_lat+","+r_lngt);
-                                        startActivity(intent);
-//
-//                                        if (intent.resolveActivity(getPackageManager()) != null) {
-//                                            Log.d(TAG, "Intent resolved successfully");
-//                                            startActivity(intent);
-//                                        } else {
-//                                            Log.d(TAG, "No activity found to handle intent");
-//                                            Toast.makeText(NewActivity.this, "No navigation app installed", Toast.LENGTH_SHORT).show();
-//                                        }
+                                    // Check if Start button has been clicked
+                                    if (!isLocationTrackingStarted) {
+                                        // Show pop-up message
+                                        Toast.makeText(NewActivity.this, "Please start tracking first", Toast.LENGTH_SHORT).show();
                                     } else {
-                                        Toast.makeText(NewActivity.this, "Destination not available", Toast.LENGTH_SHORT).show();
+                                        // Check if r_lat and r_lngt are not null
+                                        if (r_lat != null && r_lngt != null) {
+                                            // Create a URI for the Google Maps navigation
+                                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + r_lat + "," + r_lngt));
+                                            intent.setPackage("com.google.android.apps.maps");
+                                            startActivity(intent);
+                                        } else {
+                                            Toast.makeText(NewActivity.this, "Destination not available", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 }
                             });
+
                         }
                         tableLayout.addView(row);
                     }

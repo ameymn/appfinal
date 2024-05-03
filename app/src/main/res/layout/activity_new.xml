@@ -11,6 +11,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center"
+        android:textColor="@color/primary_text_color"
         android:padding="16dp" />
 
     <HorizontalScrollView
@@ -26,26 +27,22 @@
             android:stretchColumns="*">
 
             <!-- Table Header Row -->
-            <TableRow>
+            <TableRow android:background="@color/header_background_color">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Transplant Id"
                     android:textStyle="bold"
-                    android:padding="8dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Driver Name"
-                    android:textStyle="bold"
-                    android:padding="8dp"/>
+                    android:padding="12dp"
+                    android:textColor="@color/primary_text_color"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Status"
                     android:textStyle="bold"
-                    android:padding="8dp"/>
+                    android:padding="12dp"
+                    android:textColor="@color/primary_text_color"/>
 
             </TableRow>
 

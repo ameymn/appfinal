@@ -1,63 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <TextView
         android:id="@+id/textViewTransplantId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp" />
-
-    <TextView
-        android:id="@+id/textViewDriverName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp" />
+        android:paddingStart="12dp"
+        android:paddingEnd="4dp"
+        android:textColor="@color/secondary_text_color" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="end"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/textViewStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp" />
+            android:paddingStart="4dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/secondary_text_color" />
 
-        <Button
-            android:id="@+id/buttonStart"
-            android:layout_width="55dp"
-            android:layout_height="36dp"
-            android:background="@color/light_green"
-            android:text="Start"
-            android:onClick="onStartButtonClicked"
-            android:textSize="10sp" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <Space
-            android:layout_width="16dp"
-            android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/buttonStart"
+                android:layout_width="55dp"
+                android:layout_height="30dp"
+                android:background="@drawable/rounded_button_background"
+                android:onClick="onStartButtonClicked"
+                android:padding="8dp"
+                android:text="Start"
+                android:textAlignment="center"
+                android:textColor="@color/button_text_color"
+                android:textSize="12sp" />
 
-        <Button
-            android:id="@+id/buttonStop"
-            android:layout_width="55dp"
-            android:layout_height="36dp"
-            android:background="@color/light_green"
-            android:text="Stop"
-            android:textSize="10sp" />
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="wrap_content" />
 
-        <Space
-            android:layout_width="16dp"
-            android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/buttonStop"
+                android:layout_width="55dp"
+                android:layout_height="30dp"
+                android:background="@drawable/rounded_button_background"
+                android:padding="8dp"
+                android:text="Stop"
+                android:textAlignment="center"
+                android:textColor="@color/button_text_color"
+                android:textSize="12sp" />
 
-        <Button
-            android:id="@+id/buttonNavigate"
-            android:layout_width="55dp"
-            android:layout_height="36dp"
-            android:background="@color/light_green"
-            android:text="Navigate"
-            android:textSize="10sp" />
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/buttonNavigate"
+                android:layout_width="55dp"
+                android:layout_height="30dp"
+                android:background="@drawable/rounded_button_background"
+                android:padding="8dp"
+                android:text="Navigate"
+                android:textAlignment="center"
+                android:textColor="@color/button_text_color"
+                android:textSize="12sp"
+                />
+
+
+        </LinearLayout>
 
     </LinearLayout>
 
